@@ -82,7 +82,7 @@ function Sidebar() {
               <>
                 <button
                   onClick={() => toggleCollapse(index)}
-                  className="flex justify-between items-center w-full py-2 px-4 rounded hover:bg-gray-700 transition"
+                  className="flex justify-between items-center w-full py-2 px-4 rounded hover:bg-gray-700 transition transform hover:scale-105 duration-150"
                 >
                   <span className="flex items-center gap-2">
                     {section.title === "Super Distributor" && (
@@ -142,8 +142,14 @@ function Sidebar() {
               </>
             ) : (
               <a
-                href="#"
-                className="flex items-center gap-2 w-full py-2 px-4 rounded hover:bg-gray-700 transition"
+                href={
+                  section.title === "Change MPIN"
+                    ? "/changempin"
+                    : section.title === "Change Pass by Admin"
+                    ? "/changepassbyadmin"
+                    : "#"
+                }
+                className="flex items-center gap-2 w-full py-2 px-4 rounded hover:bg-gray-700 transition transform hover:scale-105 duration-150"
               >
                 {section.title === "Fresh Enrolls" && <BiUserPlus size={18} />}
                 {section.title === "Device Detail" && <BiChip size={18} />}
