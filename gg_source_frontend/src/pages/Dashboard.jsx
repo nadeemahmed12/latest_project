@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import AppLayout from "../layouts/AppLayout";
 
 const Dashboard = () => {
   const [statsData, setStatsData] = useState({
@@ -17,14 +16,13 @@ const Dashboard = () => {
 
   const [loading, setLoading] = useState(true);
 
-  // Yahan aap API call karenge
+  // API call here for stats
   useEffect(() => {
     fetchDashboardData();
   }, []);
 
   const fetchDashboardData = async () => {
     try {
-      // Aap yahan apna API endpoint dalenge /api/dashboard-stats
       const response = await fetch("/api/dashboard-stats");
       const data = await response.json();
 
@@ -49,131 +47,26 @@ const Dashboard = () => {
   };
 
   if (loading) {
-    return (
-      <AppLayout
-        header={
-          <h1 className="text-2xl font-bold text-gray-900">
-            Welcome! Smart Key
-          </h1>
-        }
-      >
-        <div className="py-6">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">Loading...</div>
-          </div>
-        </div>
-      </AppLayout>
-    );
+    return <div className="text-center py-10">Loading...</div>;
   }
 
   return (
-    <AppLayout
-      header={
-        <div className="flex items-center gap-4 justify-between">
-          <h1 className="text-2xl font-bold text-gray-900">
-            Welcome! Smart Key
-          </h1>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded shadow cursor-pointer">
-            Refresh
-          </button>
-        </div>
-      }
-    >
-      <div className="py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Stats Grid in the same order as statsData */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            {/* Available Smart Keys */}
-            <div className="bg-white rounded-lg shadow p-3">
-              <div className="text-3xl font-bold text-blue-600">
-                {statsData.availableSmartKeys}
-              </div>
-              <div className="text-gray-600 mt-2">Available Smart Keys</div>
-            </div>
-
-            {/* Available Ultra Smart Keys */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="text-3xl font-bold text-green-600">
-                {statsData.availableUltraSmartKeys}
-              </div>
-              <div className="text-gray-600 mt-2">
-                Available Ultra Smart Keys
-              </div>
-            </div>
-
-            {/* Today's Activation Smart Keys */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="text-3xl font-bold text-purple-600">
-                {statsData.todayActivationSmartKeys}
-              </div>
-              <div className="text-gray-600 mt-2">
-                Today's Activation Smart Keys
-              </div>
-            </div>
-
-            {/* Today's Activation Ultra Smart Keys */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="text-3xl font-bold text-orange-600">
-                {statsData.todayActivationUltraSmartKeys}
-              </div>
-              <div className="text-gray-600 mt-2">
-                Today's Activation Ultra Smart Keys
-              </div>
-            </div>
-
-            {/* Total Active Clients */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="text-3xl font-bold text-gray-800">
-                {statsData.totalActiveClients.toLocaleString()}
-              </div>
-              <div className="text-gray-600 mt-2">Total Active Clients</div>
-            </div>
-
-            {/* Total Supers */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="text-3xl font-bold text-orange-600">
-                {statsData.totalSupers}
-              </div>
-              <div className="text-gray-600 mt-2">Total Supers</div>
-            </div>
-
-            {/* Total Distributors */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="text-3xl font-bold text-blue-600">
-                {statsData.totalDistributors}
-              </div>
-              <div className="text-gray-600 mt-2">Total Distributors</div>
-            </div>
-
-            {/* Total Dealers */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="text-3xl font-bold text-green-600">
-                {statsData.totalDealers}
-              </div>
-              <div className="text-gray-600 mt-2">Total Dealers</div>
-            </div>
-
-            {/* Total Sale Smart Keys */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="text-3xl font-bold text-red-600">
-                {statsData.totalSaleSmartKeys.toLocaleString()}
-              </div>
-              <div className="text-gray-600 mt-2">Total Sale Smart Keys</div>
-            </div>
-
-            {/* Total Sale Ultra Smart Keys */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <div className="text-3xl font-bold text-indigo-600">
-                {statsData.totalSaleUltraSmartKeys.toLocaleString()}
-              </div>
-              <div className="text-gray-600 mt-2">
-                Total Sale Ultra Smart Keys
-              </div>
+    <div className="py-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Stats boxes */}
+        {Object.entries(statsData).map(([key, value]) => (
+          <div
+            key={key}
+            className="bg-white rounded-lg shadow p-4 flex flex-col items-center"
+          >
+            <div className="text-3xl font-bold text-blue-600">{value}</div>
+            <div className="text-gray-600 mt-2 text-center">
+              {key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
             </div>
           </div>
-        </div>
+        ))}
       </div>
-    </AppLayout>
+    </div>
   );
 };
 
