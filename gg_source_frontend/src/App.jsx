@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import ChangeMpin from './pages/ChangeMpin';
 import ChangePasswordByAdmin from './pages/ChangePasswordByAdmin';  
 import Login from './pages/Login';
+import Logout from './pages/Logout';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/changeMpin" element={<ChangeMpin />} />
         <Route path="/changepassbyadmin" element={<ChangePasswordByAdmin />} />
+        <Route path="/logout" element={<Logout />} />
       </Routes>
     </Router>
   );

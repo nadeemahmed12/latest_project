@@ -147,6 +147,8 @@ function Sidebar() {
                     ? "/changempin"
                     : section.title === "Change Pass by Admin"
                     ? "/changepassbyadmin"
+                    : section.title === "Logout"
+                    ? "/logout"
                     : "#"
                 }
                 className="flex items-center gap-2 w-full py-2 px-4 rounded hover:bg-gray-700 transition transform hover:scale-105 duration-150"
