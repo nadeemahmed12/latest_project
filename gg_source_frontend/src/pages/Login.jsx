@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { BiHide, BiShow } from "react-icons/bi";
+import logo from "../assets/Logo.png";
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -18,7 +19,7 @@ function Login() {
         {/* Logo */}
         <div className="flex justify-center mb-6">
           <img
-            src="/assets/logo 1.png"
+           src={logo}
             alt="Logo"
             className="h-30 w-auto"
           />

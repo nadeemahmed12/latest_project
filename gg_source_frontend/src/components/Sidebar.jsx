@@ -41,9 +41,9 @@ export default function Sidebar() {
         "Key Record",
       ],
     },
-    { type: "link", title: "Change My Password", path: "/change-password" },
-    { type: "link", title: "Change Pass by Admin", path: "/change-pass-admin" },
-    { type: "link", title: "Change MPIN", path: "/change-mpin" },
+    { type: "link", title: "Change My Password", path: "/changepassword" },
+    { type: "link", title: "Change Pass by Admin", path: "/changepassadmin" },
+    { type: "link", title: "Change MPIN", path: "/changempin" },
     { type: "link", title: "Logout", path: "/logout" },
   ];
 
@@ -60,9 +60,10 @@ export default function Sidebar() {
   return (
     <aside
       className={`h-screen flex flex-col bg-gray-800 text-white transition-all duration-300 ${
-        expanded ? "w-64" : "w-20"
+        expanded ? "w-68" : "w-20"
       }`}
     >
+      {/* Header with logo and collapse button */}
       <div className="p-4 pb-2 flex justify-between items-center bg-white">
         {expanded && <img src={logo} alt="Logo" className="h-12 w-auto" />}
         <button
@@ -73,8 +74,9 @@ export default function Sidebar() {
         </button>
       </div>
 
-      <ul className="flex-1 px-2 overflow-y-auto">
-        {/* Dashboard link */}
+      {/* Sidebar Menu */}
+      <ul className="flex-1 px-2 overflow-y-auto scroll-smooth scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+        {/* Dashboard */}
         <li className="mb-1">
           <Link
             to="/dashboard"
@@ -87,73 +89,145 @@ export default function Sidebar() {
           </Link>
         </li>
 
-        {/* Baaki menu items */}
+        {/* Dynamic Menu Items */}
         {menuItems.map((section, index) => (
           <li key={index} className="mb-1">
             {section.type === "collapse" ? (
               <>
                 <button
                   onClick={() => toggleCollapse(index)}
-                  className="flex justify-between items-center w-full py-2 px-2 rounded hover:bg-gray-700 transition"
+                  className="flex justify-between items-center w-full py-2 px-2 rounded hover:bg-gray-700 transition duration-150"
                 >
                   <span className="flex items-center gap-2">
-                    {section.title === "Super Distributor" && <MdPerson size={18} />}
-                    {section.title === "Distribution" && <MdPerson size={18} />}
-                    {section.title === "Dealer" && <MdPerson size={18} />}
+                    {["Super Distributor", "Distribution", "Dealer"].includes(
+                      section.title
+                    ) && <MdPerson size={18} />}
                     {section.title === "Report" && <BiBarChart size={18} />}
-                    {expanded && section.title}
+                    {expanded && <span>{section.title}</span>}
                   </span>
                   {expanded && (
                     <span>
-                      {openIndex === index ? <BiChevronUp size={18} /> : <BiChevronDown size={18} />}
+                      {openIndex === index ? (
+                        <BiChevronUp size={18} />
+                      ) : (
+                        <BiChevronDown size={18} />
+                      )}
                     </span>
                   )}
                 </button>
 
-                {expanded && openIndex === index && section.items.length > 0 && (
+                {/* Dropdown Items */}
+                {expanded && openIndex === index && (
                   <ul className="ml-6 mt-1 space-y-1">
-                    {section.items.map((item, idx) => (
-                      <li key={idx}>
-                        <Link
-                          to={
-                            section.title === "Super Distributor"
-                              ? item === "Add"
-                                ? "/addDistributor"
-                                : "/listofDistributor"
-                              : "#"
-                          }
-                          className={`flex items-center gap-2 py-1 px-2 rounded hover:bg-gray-700 transition ${
-                            isActiveLink(
-                              section.title === "Super Distributor"
-                                ? item === "Add"
-                                  ? "/addDistributor"
-                                  : "/listofDistributor"
+                    {section.items.map((item, idx) => {
+                      let toPath = "#";
+
+                      // Super Distributor Paths
+                      if (section.title === "Super Distributor") {
+                        toPath =
+                          item === "Add"
+                            ? "/addDistributor"
+                            : "/listofDistributor";
+                      }
+                      // Distributor Paths
+                      if (section.title === "Distribution") {
+                        toPath = item === "List" ? "/listofDistribution" : "#";
+                      }
+                      // Dealer Paths
+                      if (section.title === "Dealer") {
+                        toPath = item === "List" ? "/listofDealer" : "#";
+                      }
+
+                      // Report Paths
+                      if (section.title === "Report") {
+                        const reportPaths = {
+                          "Sale Report": "/sale-report",
+                          "Stock Report": "/stock-report",
+                          "Low Activation Report": "/low-activation-report",
+                          "Activation Report": "/activation-report",
+                          "Dob Report": "/dob-report",
+                          "Key Record": "/key-record",
+                        };
+                        toPath = reportPaths[item] || "#";
+                      }
+                      //change Password by admin
+                      if (section.title === "Change Pass by Admin") {
+                        toPath = item === "Change Pass by Admin" ? "/changepassadmin" : "#";
+                      }
+
+
+                      //change MPIN
+                      if (section.title === "Change MPIN") {
+                        toPath = item === "Change MPIN" ? "/changempin" : "#";
+                      }
+
+
+                      return (
+                        <li key={idx}>
+                          <Link
+                            to={toPath}
+                            className={`flex items-center gap-2 py-1 px-2 rounded hover:bg-gray-700 transition duration-150 ${
+                              isActiveLink(toPath)
+                                ? "bg-indigo-700 text-white"
                                 : ""
-                            )
-                              ? "bg-indigo-700 text-white"
-                              : ""
-                          }`}
-                        >
-                          {item === "Add" && <BiPlus size={18} />}
-                          {item === "List" && <BiListUl size={18} />}
-                          <span>{item}</span>
-                        </Link>
-                      </li>
-                    ))}
+                            }`}
+                          >
+                            {/* Icons for Super Distributor */}
+                            {section.title === "Super Distributor" &&
+                              item === "Add" && <BiPlus size={18} />}
+                            {section.title === "Super Distributor" &&
+                              item === "List" && <BiListUl size={18} />}
+
+                            {/* Distributor */}
+                            {section.title === "Distribution" &&
+                              item === "List" && <BiListUl size={18} />}
+
+                            {/* Dealer */}
+                            {section.title === "Dealer" && item === "List" && (
+                              <BiListUl size={18} />
+                            )}
+
+                            {/* Icons for Report items */}
+                            {section.title === "Report" &&
+                              item === "Sale Report" && <BiReceipt size={18} />}
+                            {section.title === "Report" &&
+                              item === "Stock Report" && <BiBox size={18} />}
+                            {section.title === "Report" &&
+                              item === "Low Activation Report" && (
+                                <BiTrendingDown size={18} />
+                              )}
+                            {section.title === "Report" &&
+                              item === "Activation Report" && (
+                                <BiTrendingUp size={18} />
+                              )}
+                            {section.title === "Report" &&
+                              item === "Dob Report" && <BiCalendar size={18} />}
+                            {section.title === "Report" &&
+                              item === "Key Record" && <BiKey size={18} />}
+
+                            <span>{item}</span>
+                          </Link>
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </>
             ) : (
               <Link
                 to={section.path || "#"}
-                className={`flex items-center gap-2 py-2 px-2 rounded hover:bg-gray-700 transition ${
-                  section.path && isActiveLink(section.path) ? "bg-indigo-700 text-white" : ""
+                className={`flex items-center gap-2 py-2 px-2 rounded hover:bg-gray-700 transition duration-150 ${
+                  section.path && isActiveLink(section.path)
+                    ? "bg-indigo-700 text-white"
+                    : ""
                 }`}
               >
                 {section.title === "Fresh Enrolls" && <BiUserPlus size={18} />}
                 {section.title === "Device Detail" && <BiChip size={18} />}
                 {section.title === "Change My Password" && <BiKey size={18} />}
-                {section.title === "Change Pass by Admin" && <BiShield size={18} />}
+                {section.title === "Change Pass by Admin" && (
+                  <BiShield size={18} />
+                )}
                 {section.title === "Change MPIN" && <BiLock size={18} />}
                 {section.title === "Logout" && <BiLogOut size={18} />}
                 {expanded && <span>{section.title}</span>}
@@ -163,9 +237,10 @@ export default function Sidebar() {
         ))}
       </ul>
 
+      {/* Footer */}
       {expanded && (
-        <div className="bg-blue-700 p-3 text-sm text-white">
-          Copyright @ 2025, All Rights Reserved
+        <div className="bg-blue-700 p-3 text-sm text-left text-white rounded-t-lg">
+          Copyright © 2025 All Rights Reserved
         </div>
       )}
     </aside>

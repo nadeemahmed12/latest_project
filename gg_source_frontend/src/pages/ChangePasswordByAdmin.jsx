@@ -7,7 +7,7 @@ const ChangePasswordByAdmin = () => {
   const [showConfirmPass, setShowConfirmPass] = useState(false);
 
   return (
-    <AppLayout>
+    
       <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded shadow-md">
         <h2 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">
           Change Password By Admin
@@ -90,7 +90,7 @@ const ChangePasswordByAdmin = () => {
         </form>
         {/* Form End */}
       </div>
-    </AppLayout>
+    
   );
 };
 
