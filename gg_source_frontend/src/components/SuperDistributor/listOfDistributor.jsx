@@ -43,11 +43,11 @@ const ListOfDistributor = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 ">
-      <div className=" mx-auto bg-white rounded-lg shadow-md">
+    <div className="bg-gray-50 ">
+      <div className=" mx-auto bg-white rounded-lg shadow-md ">
         {/* Header */}
-        <div className="border-b bg-gray-400 py-3">
-          <h1 className="text-sm font-bold  text-gray-800">
+        <div className="border-b bg-gray-400 p-2 mb-4">
+          <h1 className="text-sm font-bold text-gray-800">
             Super Distributor List
           </h1>
         </div>

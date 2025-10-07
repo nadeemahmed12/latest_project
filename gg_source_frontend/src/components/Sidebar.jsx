@@ -17,7 +17,9 @@ import {
   BiBox,
   BiTrendingDown,
   BiTrendingUp,
+  BiBell,
   BiCalendar,
+  BiTransfer,
 } from "react-icons/bi";
 import { GoSidebarCollapse } from "react-icons/go";
 import logo from "../assets/Logo.png";
@@ -25,7 +27,7 @@ import logo from "../assets/Logo.png";
 export default function Sidebar() {
   const menuItems = [
     { type: "collapse", title: "Super Distributor", items: ["Add", "List"] },
-    { type: "collapse", title: "Distribution", items: ["List"] },
+    { type: "collapse", title: "Distributor", items: ["List"] },
     { type: "collapse", title: "Dealer", items: ["List"] },
     { type: "link", title: "Fresh Enrolls", path: "/fresh-enrolls" },
     { type: "link", title: "Device Detail", path: "/device-detail" },
@@ -42,8 +44,11 @@ export default function Sidebar() {
       ],
     },
     { type: "link", title: "Change My Password", path: "/changepassword" },
-    { type: "link", title: "Change Pass by Admin", path: "/changepassadmin" },
+      { type: "link", title: "Change Pass by Admin", path: "/changepassadmin" },
     { type: "link", title: "Change MPIN", path: "/changempin" },
+    { type: "link", title: "Distribution Migration", path: "/dismigartion" },
+    {type: "link", title: "Banner", path: "/banner" },
+    {type: "link", title: "Notification", path: "/notification" },
     { type: "link", title: "Logout", path: "/logout" },
   ];
 
@@ -99,10 +104,11 @@ export default function Sidebar() {
                   className="flex justify-between items-center w-full py-2 px-2 rounded hover:bg-gray-700 transition duration-150"
                 >
                   <span className="flex items-center gap-2">
-                    {["Super Distributor", "Distribution", "Dealer"].includes(
-                      section.title
-                    ) && <MdPerson size={18} />}
+                    {["Super Distributor", "Distributor", "Dealer"].includes(section.title) && <MdPerson size={18} />}
                     {section.title === "Report" && <BiBarChart size={18} />}
+                    {section.title === "Distribution Migration" && <BiTransfer size={18} />}
+                    {section.title === "Banner" && <BiCalendar size={18} />}
+                    {section.title === "Notification" && <BiBell size={18} />}
                     {expanded && <span>{section.title}</span>}
                   </span>
                   {expanded && (
@@ -179,7 +185,7 @@ export default function Sidebar() {
                               item === "List" && <BiListUl size={18} />}
 
                             {/* Distributor */}
-                            {section.title === "Distribution" &&
+                            {section.title === "Distributor" &&
                               item === "List" && <BiListUl size={18} />}
 
                             {/* Dealer */}
@@ -225,10 +231,11 @@ export default function Sidebar() {
                 {section.title === "Fresh Enrolls" && <BiUserPlus size={18} />}
                 {section.title === "Device Detail" && <BiChip size={18} />}
                 {section.title === "Change My Password" && <BiKey size={18} />}
-                {section.title === "Change Pass by Admin" && (
-                  <BiShield size={18} />
-                )}
+                {section.title === "Change Pass by Admin" && <BiShield size={18} />}
                 {section.title === "Change MPIN" && <BiLock size={18} />}
+                {section.title === "Distribution Migration" && <BiTransfer size={18} />}
+                {section.title === "Banner" && <BiCalendar size={18} />}
+                {section.title === "Notification" && <BiBell size={18} />}
                 {section.title === "Logout" && <BiLogOut size={18} />}
                 {expanded && <span>{section.title}</span>}
               </Link>
@@ -239,7 +246,7 @@ export default function Sidebar() {
 
       {/* Footer */}
       {expanded && (
-        <div className="bg-blue-700 p-3 text-sm text-left text-white rounded-t-lg">
+        <div className="bg-blue-700 p-3 text-sm text-left text-white rectangle-t-lg">
           Copyright © 2025 All Rights Reserved
         </div>
       )}
