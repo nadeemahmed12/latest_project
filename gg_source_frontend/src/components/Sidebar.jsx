@@ -19,18 +19,21 @@ import {
   BiTrendingUp,
   BiBell,
   BiCalendar,
-  BiTransfer,
 } from "react-icons/bi";
 import { GoSidebarCollapse } from "react-icons/go";
 import logo from "../assets/Logo.png";
 
-export default function Sidebar() {
+export default function Sidebar({ expanded, setExpanded }) {
+  const [openIndex, setOpenIndex] = useState(null);
+  const location = useLocation();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
   const menuItems = [
     { type: "collapse", title: "Super Distributor", items: ["Add", "List"] },
-    { type: "collapse", title: "Distributor", items: ["List"] },
-    { type: "collapse", title: "Dealer", items: ["List"] },
-    { type: "link", title: "Fresh Enrolls", path: "/fresh-enrolls" },
-    { type: "link", title: "Device Detail", path: "/device-detail" },
+    { type: "collapse", title: "Distributor", items: ["Add","List"] },
+    { type: "collapse", title: "Dealer", items: ["Add","List"] },
+    { type: "link", title: "Fresh Enrolls", path: "/freshenrolls" },
+    { type: "link", title: "Device Detail", path: "/devicedetail" },
     {
       type: "collapse",
       title: "Report",
@@ -43,18 +46,13 @@ export default function Sidebar() {
         "Key Record",
       ],
     },
-    { type: "link", title: "Change My Password", path: "/changepassword" },
-      { type: "link", title: "Change Pass by Admin", path: "/changepassadmin" },
+    { type: "link", title: "Change My Password", path: "/changemypassword" },
+    { type: "link", title: "Change Pass by Admin", path: "/changepassadmin" },
     { type: "link", title: "Change MPIN", path: "/changempin" },
-    { type: "link", title: "Distribution Migration", path: "/dismigartion" },
-    {type: "link", title: "Banner", path: "/banner" },
-    {type: "link", title: "Notification", path: "/notification" },
-    { type: "link", title: "Logout", path: "/logout" },
+    { type: "link", title: "Banner", path: "/banner" },
+    { type: "link", title: "Notification", path: "/notification" },
+    { type: "link", title: "Logout" },
   ];
-
-  const [expanded, setExpanded] = useState(true);
-  const [openIndex, setOpenIndex] = useState(null);
-  const location = useLocation();
 
   const toggleCollapse = (index) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -72,7 +70,7 @@ export default function Sidebar() {
       <div className="p-4 pb-2 flex justify-between items-center bg-white">
         {expanded && <img src={logo} alt="Logo" className="h-12 w-auto" />}
         <button
-          onClick={() => setExpanded((prev) => !prev)}
+          onClick={() => setExpanded(!expanded)}
           className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-800"
         >
           <GoSidebarCollapse size={20} />
@@ -81,7 +79,6 @@ export default function Sidebar() {
 
       {/* Sidebar Menu */}
       <ul className="flex-1 px-2 overflow-y-auto scroll-smooth scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
-        {/* Dashboard */}
         <li className="mb-1">
           <Link
             to="/dashboard"
@@ -94,7 +91,6 @@ export default function Sidebar() {
           </Link>
         </li>
 
-        {/* Dynamic Menu Items */}
         {menuItems.map((section, index) => (
           <li key={index} className="mb-1">
             {section.type === "collapse" ? (
@@ -104,9 +100,10 @@ export default function Sidebar() {
                   className="flex justify-between items-center w-full py-2 px-2 rounded hover:bg-gray-700 transition duration-150"
                 >
                   <span className="flex items-center gap-2">
-                    {["Super Distributor", "Distributor", "Dealer"].includes(section.title) && <MdPerson size={18} />}
+                    {["Super Distributor", "Distributor", "Dealer"].includes(
+                      section.title
+                    ) && <MdPerson size={18} />}
                     {section.title === "Report" && <BiBarChart size={18} />}
-                    {section.title === "Distribution Migration" && <BiTransfer size={18} />}
                     {section.title === "Banner" && <BiCalendar size={18} />}
                     {section.title === "Notification" && <BiBell size={18} />}
                     {expanded && <span>{section.title}</span>}
@@ -122,51 +119,39 @@ export default function Sidebar() {
                   )}
                 </button>
 
-                {/* Dropdown Items */}
                 {expanded && openIndex === index && (
                   <ul className="ml-6 mt-1 space-y-1">
                     {section.items.map((item, idx) => {
                       let toPath = "#";
 
-                      // Super Distributor Paths
+                      // Generate paths dynamically
                       if (section.title === "Super Distributor") {
                         toPath =
                           item === "Add"
-                            ? "/addDistributor"
-                            : "/listofDistributor";
+                            ? "/addsuperdistributor"
+                            : "/superdistributorlist";
                       }
-                      // Distributor Paths
-                      if (section.title === "Distribution") {
-                        toPath = item === "List" ? "/listofDistribution" : "#";
+                      if (section.title === "Distributor") {
+                        toPath = item === "Add"
+                          ? "/adddistributor"
+                            : "/distributorlist";
                       }
-                      // Dealer Paths
                       if (section.title === "Dealer") {
-                        toPath = item === "List" ? "/listofDealer" : "#";
+                        toPath = item ==="Add"
+                          ? "/adddealer"
+                            : "/dealerlist";
                       }
-
-                      // Report Paths
                       if (section.title === "Report") {
                         const reportPaths = {
-                          "Sale Report": "/sale-report",
-                          "Stock Report": "/stock-report",
-                          "Low Activation Report": "/low-activation-report",
-                          "Activation Report": "/activation-report",
-                          "Dob Report": "/dob-report",
-                          "Key Record": "/key-record",
+                          "Sale Report": "/salereport",
+                          "Stock Report": "/stockreport",
+                          "Low Activation Report": "/lowactivationreport",
+                          "Activation Report": "/activationreport",
+                          "Dob Report": "/dobreport",
+                          "Key Record": "/keyrecord",
                         };
                         toPath = reportPaths[item] || "#";
                       }
-                      //change Password by admin
-                      if (section.title === "Change Pass by Admin") {
-                        toPath = item === "Change Pass by Admin" ? "/changepassadmin" : "#";
-                      }
-
-
-                      //change MPIN
-                      if (section.title === "Change MPIN") {
-                        toPath = item === "Change MPIN" ? "/changempin" : "#";
-                      }
-
 
                       return (
                         <li key={idx}>
@@ -178,22 +163,19 @@ export default function Sidebar() {
                                 : ""
                             }`}
                           >
-                            {/* Icons for Super Distributor */}
+                            {/* Icons */}
                             {section.title === "Super Distributor" &&
                               item === "Add" && <BiPlus size={18} />}
                             {section.title === "Super Distributor" &&
                               item === "List" && <BiListUl size={18} />}
-
-                            {/* Distributor */}
+                               {section.title === "Distributor" &&
+                              item === "Add" && <BiPlus size={18} />}
                             {section.title === "Distributor" &&
                               item === "List" && <BiListUl size={18} />}
-
-                            {/* Dealer */}
-                            {section.title === "Dealer" && item === "List" && (
-                              <BiListUl size={18} />
-                            )}
-
-                            {/* Icons for Report items */}
+                               {section.title === "Dealer" &&
+                              item === "Add" && <BiPlus size={18} />}
+                            {section.title === "Dealer" &&
+                              item === "List" && <BiListUl size={18} />}
                             {section.title === "Report" &&
                               item === "Sale Report" && <BiReceipt size={18} />}
                             {section.title === "Report" &&
@@ -219,6 +201,14 @@ export default function Sidebar() {
                   </ul>
                 )}
               </>
+            ) : section.title === "Logout" ? (
+              <button
+                onClick={() => setShowLogoutModal(true)}
+                className="flex items-center gap-2 py-2 px-2 w-full text-left rounded hover:bg-gray-700 transition duration-150"
+              >
+                <BiLogOut size={18} />
+                {expanded && <span>{section.title}</span>}
+              </button>
             ) : (
               <Link
                 to={section.path || "#"}
@@ -233,10 +223,8 @@ export default function Sidebar() {
                 {section.title === "Change My Password" && <BiKey size={18} />}
                 {section.title === "Change Pass by Admin" && <BiShield size={18} />}
                 {section.title === "Change MPIN" && <BiLock size={18} />}
-                {section.title === "Distribution Migration" && <BiTransfer size={18} />}
                 {section.title === "Banner" && <BiCalendar size={18} />}
                 {section.title === "Notification" && <BiBell size={18} />}
-                {section.title === "Logout" && <BiLogOut size={18} />}
                 {expanded && <span>{section.title}</span>}
               </Link>
             )}
@@ -248,6 +236,34 @@ export default function Sidebar() {
       {expanded && (
         <div className="bg-blue-700 p-3 text-sm text-left text-white rectangle-t-lg">
           Copyright © 2025 All Rights Reserved
+        </div>
+      )}
+
+      {/* Logout Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 flex justify-center items-center bg-black/30 z-50">
+          <div className="bg-white rounded-md shadow-lg p-6 w-80 text-center">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+              Are you sure you want to logout?
+            </h2>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => {
+                  localStorage.clear();
+                  window.location.href = "/";
+                }}
+                className="bg-blue-700 text-white px-6 py-1 rounded hover:bg-blue-500"
+              >
+                YES
+              </button>
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                className="bg-blue-700 text-white px-6 py-1 rounded hover:bg-blue-500"
+              >
+                NO
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </aside>

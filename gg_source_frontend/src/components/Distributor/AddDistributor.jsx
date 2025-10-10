@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BiShow, BiHide } from "react-icons/bi";
+import axios from "axios";
 
-const AddSuperDistributor = () => {
+const AddDistributor = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -15,29 +16,44 @@ const AddSuperDistributor = () => {
     address: "",
     password: "",
     confirmPassword: "",
+    superDistributor: "",
   });
 
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [superDistributors, setSuperDistributors] = useState([]);
+  const [loadingSuper, setLoadingSuper] = useState(true);
 
-  // Email validation handler
+  // 🔹 Fetch super distributor list
+  useEffect(() => {
+    const fetchSuper = async () => {
+      try {
+        setLoadingSuper(true);
+        const res = await axios.get("http://localhost:5000/api/superlist");
+        setSuperDistributors(res.data); // API response data
+      } catch (err) {
+        console.error("Error fetching super distributors:", err);
+      } finally {
+        setLoadingSuper(false);
+      }
+    };
+    fetchSuper();
+  }, []);
+
+  // 🔹 Email validation handler
   const handleChangeEmail = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
-    // Email validation regex
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (name === "email") {
-      if (!emailPattern.test(value)) {
-        setError("Please enter a valid email id");
-      } else {
-        setError("");
-      }
+      if (!emailPattern.test(value)) setError("Please enter a valid email id");
+      else setError("");
     }
   };
 
-  // General input change handler
+  // 🔹 General input handler
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -45,10 +61,10 @@ const AddSuperDistributor = () => {
     });
   };
 
-  // Form submit handler
+  // 🔹 Submit form
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    console.log("Form Submitted:", formData);
   };
 
   return (
@@ -57,7 +73,7 @@ const AddSuperDistributor = () => {
         {/* Header */}
         <div className="bg-gray-400 p-2 mb-4">
           <h1 className="text-sm font-bold text-gray-700">
-            Add New Super Distributor
+            Add New Distributor
           </h1>
         </div>
 
@@ -68,14 +84,14 @@ const AddSuperDistributor = () => {
           {/* Row 1 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Enter Name of Super
+              Enter Name of Distributor
             </label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Enter Name Of Super"
+              placeholder="Enter Name Of Distributor"
               className="w-full px-2 py-0.5 border border-gray-500 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-400"
             />
           </div>
@@ -99,9 +115,7 @@ const AddSuperDistributor = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Enter Mobile Number
             </label>
-
             <div className="flex">
-              {/* Country Code Dropdown */}
               <select
                 name="countryCode"
                 value={formData.countryCode || "+91"}
@@ -110,14 +124,8 @@ const AddSuperDistributor = () => {
               >
                 <option value="+91">🇮🇳 +91</option>
                 <option value="+1">🇺🇸 +1</option>
-                <option value="+33">🇫🇷 +33</option>
-                <option value="+39">🇮🇹 +39</option>
-                <option value="+81">🇯🇵 +81</option>
-                <option value="+86">🇨🇳 +86</option>
                 <option value="+971">🇦🇪 +971</option>
               </select>
-
-              {/* Mobile Number Input */}
               <input
                 type="text"
                 name="mobile"
@@ -153,7 +161,7 @@ const AddSuperDistributor = () => {
               name="gst"
               value={formData.gst}
               onChange={handleChange}
-              placeholder="Enter GST Number"
+              placeholder="Enter GST Number (optional)"
               className="w-full px-2 py-0.5 border border-gray-500 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-400"
             />
           </div>
@@ -172,8 +180,8 @@ const AddSuperDistributor = () => {
             />
           </div>
 
-          {/* Row 3: Country, State, City */}
-          <div className="relative overflow-visible">
+          {/* Row 3 */}
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Enter Country Name
             </label>
@@ -186,9 +194,6 @@ const AddSuperDistributor = () => {
               <option>India</option>
               <option>USA</option>
               <option>UK</option>
-              <option>Canada</option>
-              <option>Australia</option>
-              <option>Germany</option>
             </select>
           </div>
 
@@ -201,7 +206,7 @@ const AddSuperDistributor = () => {
               name="state"
               value={formData.state}
               onChange={handleChange}
-              placeholder="Search for State"
+              placeholder="Enter State"
               className="w-full px-2 py-0.5 border border-gray-500 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-400"
             />
           </div>
@@ -215,12 +220,12 @@ const AddSuperDistributor = () => {
               name="city"
               value={formData.city}
               onChange={handleChange}
-              placeholder="Search for City"
+              placeholder="Enter City"
               className="w-full px-2 py-0.5 border border-gray-500 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-400"
             />
           </div>
 
-          {/* Row 4: Address, Password, Confirm Password */}
+          {/* Row 4 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Enter Address
@@ -235,6 +240,7 @@ const AddSuperDistributor = () => {
             />
           </div>
 
+          {/* Passwords */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Enter Password
@@ -246,13 +252,13 @@ const AddSuperDistributor = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Enter Password"
-                className="w-full px-2 py-0.5 border border-gray-500 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-400 pr-8"
+                className="w-full px-2 py-0.5 border border-gray-500 rounded-sm pr-8 focus:outline-none focus:ring-2 focus:ring-red-400"
               />
               <span
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
                 onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
               >
-                {showPassword ? <BiHide size={20} /> : <BiShow size={20} />}
+                {showPassword ? <BiHide /> : <BiShow />}
               </span>
             </div>
           </div>
@@ -268,17 +274,42 @@ const AddSuperDistributor = () => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 placeholder="Enter Confirm Password"
-                className="w-full px-2 py-0.5 border border-gray-500 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-400 pr-8"
+                className="w-full px-2 py-0.5 border border-gray-500 rounded-sm pr-8 focus:outline-none focus:ring-2 focus:ring-red-400"
               />
               <span
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
                 onClick={() => setShowConfirmPassword((prev) => !prev)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
               >
-                {showConfirmPassword ? (
-                  <BiHide size={20} />
+                {showConfirmPassword ? <BiHide /> : <BiShow />}
+              </span>
+            </div>
+          </div>
+
+          {/* 🔹 Super Distributor Dropdown */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Select Super Distributor
+            </label>
+            <div className="relative">
+              <select
+                name="superDistributor"
+                value={formData.superDistributor}
+                onChange={handleChange}
+                className="w-full px-2 py-0.5 border border-gray-500 rounded-sm appearance-none focus:outline-none focus:ring-2 focus:ring-red-400"
+              >
+                <option value="">Select Super Distributor</option>
+                {loadingSuper ? (
+                  <option>Loading...</option>
                 ) : (
-                  <BiShow size={20} />
+                  superDistributors.map((sd, idx) => (
+                    <option key={idx} value={sd.name || sd.id}>
+                      {sd.name || sd.id}
+                    </option>
+                  ))
                 )}
+              </select>
+              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
+                ▼
               </span>
             </div>
           </div>
@@ -287,7 +318,7 @@ const AddSuperDistributor = () => {
           <div className="md:col-span-3 flex justify-center">
             <button
               type="submit"
-              className="bg-blue-800 text-white text-sm font-bold py-1 px-32 rounded-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="bg-blue-800 text-white text-sm font-bold py-1 px-32 rounded-sm hover:bg-blue-700"
             >
               SUBMIT
             </button>
@@ -298,4 +329,4 @@ const AddSuperDistributor = () => {
   );
 };
 
-export default AddSuperDistributor;
+export default AddDistributor;

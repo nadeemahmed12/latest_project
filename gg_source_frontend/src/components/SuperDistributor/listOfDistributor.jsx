@@ -10,7 +10,7 @@ const ListOfDistributor = () => {
     const fetchDistributors = async () => {
       setLoading(true);
       try {
-        const response = await fetch("http://localhost:5000/api/list");
+        const response = await fetch("http://localhost:5000/api/superlist");
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -34,6 +34,24 @@ const ListOfDistributor = () => {
       distributor.mobile?.includes(searchTerm)
   );
 
+  // 📁 Function to download Excel file
+  const downloadExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(filtered);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Super Distributors");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+    const fileData = new Blob([excelBuffer], {
+      type: "application/octet-stream",
+    });
+
+    saveAs(fileData, "superdistributorslist.xlsx");
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50  flex items-center justify-center">
@@ -46,10 +64,18 @@ const ListOfDistributor = () => {
     <div className="bg-gray-50 ">
       <div className=" mx-auto bg-white rounded-lg shadow-md ">
         {/* Header */}
-        <div className="border-b bg-gray-400 p-2 mb-4">
-          <h1 className="text-sm font-bold text-gray-800">
+        <div className=" p-2 mb-4">
+          <h1 className="text-lg font-bold text-gray-800">
             Super Distributor List
           </h1>
+          <div className="flex justify-end">
+  <button
+    onClick={downloadExcel}
+    className="bg-blue-700 text-white px-4 py-1 rounded hover:bg-blue-600 transition duration-200"
+  >
+    DOWNLOAD
+  </button>
+</div>
         </div>
 
         {/* Controls */}
@@ -93,11 +119,20 @@ const ListOfDistributor = () => {
                 <th className="px-4 py-2 text-left text-gray-500">Company</th>
                 <th className="px-4 py-2 text-left text-gray-500">Mobile</th>
                 <th className="px-4 py-2 text-left text-gray-500">Admin</th>
-                <th className="px-4 py-2 text-left text-gray-500">Smart keys</th>
-                <th className="px-4 py-2 text-left text-gray-500">Smart free keys</th>
-                <th className="px-4 py-2 text-left text-gray-500">Ultra Smart keys</th>
-                <th className="px-4 py-2 text-left text-gray-500">Ultra Smart free keys</th>
+                <th className="px-4 py-2 text-left text-gray-500">
+                  Smart keys
+                </th>
+                <th className="px-4 py-2 text-left text-gray-500">
+                  Smart free keys
+                </th>
+                <th className="px-4 py-2 text-left text-gray-500">
+                  Ultra Smart keys
+                </th>
+                <th className="px-4 py-2 text-left text-gray-500">
+                  Ultra Smart free keys
+                </th>
                 <th className="px-4 py-2 text-left text-gray-500">DOB</th>
+                <th className="px-4 py-2 text-left text-gray-500">Status</th>
               </tr>
             </thead>
             <tbody className="bg-white">
@@ -109,10 +144,17 @@ const ListOfDistributor = () => {
                   <td className="px-4 py-2 whitespace-nowrap">{d.mobile}</td>
                   <td className="px-4 py-2 whitespace-nowrap">{d.admin}</td>
                   <td className="px-4 py-2 whitespace-nowrap">{d.smartKeys}</td>
-                  <td className="px-4 py-2 whitespace-nowrap">{d.smartFreeKeys}</td>
-                  <td className="px-4 py-2 whitespace-nowrap">{d.ultraSmartKeys}</td>
-                  <td className="px-4 py-2 whitespace-nowrap">{d.ultraSmartFreeKeys}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    {d.smartFreeKeys}
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    {d.ultraSmartKeys}
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    {d.ultraSmartFreeKeys}
+                  </td>
                   <td className="px-4 py-2 whitespace-nowrap">{d.dob}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">{d.status}</td>
                 </tr>
               ))}
             </tbody>
@@ -121,8 +163,8 @@ const ListOfDistributor = () => {
 
         {/* Table Info */}
         <div className="px-6 py-3 border-t border-gray-200 bg-gray-50 text-xs">
-          Showing 1 to {Math.min(entriesPerPage, filteredDistributors.length)} of{" "}
-          {filteredDistributors.length} entries
+          Showing 1 to {Math.min(entriesPerPage, filteredDistributors.length)}{" "}
+          of {filteredDistributors.length} entries
         </div>
       </div>
     </div>

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { BiShow, BiHide } from "react-icons/bi";
 
-const AddSuperDistributor = () => {
+const AddDealer = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -15,11 +16,26 @@ const AddSuperDistributor = () => {
     address: "",
     password: "",
     confirmPassword: "",
+    distributorId: "",
   });
 
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [distributors, setDistributors] = useState([]);
+
+  // 🔹 Fetch distributor list
+  useEffect(() => {
+    const fetchDistributors = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/distributorlist");
+        setDistributors(res.data);
+      } catch (err) {
+        console.error("Error fetching distributors:", err);
+      }
+    };
+    fetchDistributors();
+  }, []);
 
   // Email validation handler
   const handleChangeEmail = (e) => {
@@ -56,9 +72,7 @@ const AddSuperDistributor = () => {
       <div className="bg-white rounded-lg shadow-md p-4">
         {/* Header */}
         <div className="bg-gray-400 p-2 mb-4">
-          <h1 className="text-sm font-bold text-gray-700">
-            Add New Super Distributor
-          </h1>
+          <h1 className="text-sm font-bold text-gray-700">Add Dealer</h1>
         </div>
 
         <form
@@ -68,7 +82,7 @@ const AddSuperDistributor = () => {
           {/* Row 1 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Enter Name of Super
+              Enter Name of Dealer
             </label>
             <input
               type="text"
@@ -153,7 +167,7 @@ const AddSuperDistributor = () => {
               name="gst"
               value={formData.gst}
               onChange={handleChange}
-              placeholder="Enter GST Number"
+              placeholder="Enter GST Number(optional)"
               className="w-full px-2 py-0.5 border border-gray-500 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-400"
             />
           </div>
@@ -272,13 +286,36 @@ const AddSuperDistributor = () => {
               />
               <span
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
-                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                onClick={() =>
+                  setShowConfirmPassword((prev) => !prev)
+                }
               >
-                {showConfirmPassword ? (
-                  <BiHide size={20} />
-                ) : (
-                  <BiShow size={20} />
-                )}
+                {showConfirmPassword ? <BiHide size={20} /> : <BiShow size={20} />}
+              </span>
+            </div>
+          </div>
+
+          {/* Distributor Dropdown */}
+          <div className="mb-3">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Select Distributor
+            </label>
+            <div className="relative">
+              <select
+                name="distributorId"
+                value={formData.distributorId}
+                onChange={handleChange}
+                className="w-full border px-2 py-1 rounded appearance-none focus:outline-none focus:ring-2 focus:ring-blue-400"
+              >
+                <option value="">-- Select Distributor --</option>
+                {distributors.map((dist) => (
+                  <option key={dist.id} value={dist.id}>
+                    {dist.name}
+                  </option>
+                ))}
+              </select>
+              <span className="absolute right-2 top-2.5 text-gray-500 pointer-events-none">
+                ▼
               </span>
             </div>
           </div>
@@ -298,4 +335,4 @@ const AddSuperDistributor = () => {
   );
 };
 
-export default AddSuperDistributor;
+export default AddDealer;

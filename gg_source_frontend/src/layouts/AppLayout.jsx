@@ -7,6 +7,9 @@ function AppLayout({ header = null }) {
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef();
 
+  // New state to sync sidebar expand/collapse
+  const [sidebarExpanded, setSidebarExpanded] = useState(true);
+
   useEffect(() => {
     if (!profileOpen) return;
 
@@ -24,11 +27,15 @@ function AppLayout({ header = null }) {
     <div className="flex h-screen overflow-hidden bg-gray-100 font-sans antialiased">
       {/* Sidebar Fixed */}
       <div className="fixed h-screen">
-        <Sidebar />
+        <Sidebar expanded={sidebarExpanded} setExpanded={setSidebarExpanded} />
       </div>
 
       {/* Main Area */}
-      <div className="flex-1 flex flex-col ml-[17rem] overflow-y-auto">
+      <div
+        className={`flex-1 flex flex-col overflow-y-auto transition-all duration-300 ${
+          sidebarExpanded ? 'ml-68' : 'ml-20'
+        }`}
+      >
         {/* Navbar */}
         <nav className="bg-blue-700 shadow">
           <div className="max-w-6xl mx-auto px-4 py-2 flex justify-between items-center">
@@ -52,9 +59,15 @@ function AppLayout({ header = null }) {
 
               {profileOpen && (
                 <div className="absolute right-0 top-full w-48 bg-white rounded shadow-lg z-10">
-                  <a href="#" className="block px-3 py-1 text-gray-800 hover:bg-blue-100">My Account</a>
-                  <a href="#" className="block px-3 py-1 text-gray-800 hover:bg-blue-100">Logout</a>
-                  <a href="#" className="block px-3 py-1 text-gray-800 hover:bg-blue-100">Login Session</a>
+                  <a href="#" className="block px-3 py-1 text-gray-800 hover:bg-blue-100">
+                    My Account
+                  </a>
+                  <a href="#" className="block px-3 py-1 text-gray-800 hover:bg-blue-100">
+                    Logout
+                  </a>
+                  <a href="#" className="block px-3 py-1 text-gray-800 hover:bg-blue-100">
+                    Login Session
+                  </a>
                 </div>
               )}
             </div>

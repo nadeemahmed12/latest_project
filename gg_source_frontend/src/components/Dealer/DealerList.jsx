@@ -3,8 +3,8 @@ import axios from "axios";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
-const DistributorList = () => {
-  const [distributors, setDistributors] = useState([]);
+const DealerList = () => {
+  const [Dealers, setDealers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
@@ -14,10 +14,10 @@ const DistributorList = () => {
       setLoading(true);
       try {
         const response = await axios.get("http://localhost:5000/api/list");
-        setDistributors(response.data);
+        setDealers(response.data);
       } catch (err) {
         console.error("Error fetching distributors:", err);
-        setDistributors([]);
+        setDealers([]);
       } finally {
         setLoading(false);
       }
@@ -27,7 +27,7 @@ const DistributorList = () => {
   }, []);
 
   // 🔍 Filtered data
-  const filtered = distributors.filter(
+  const filtered = Dealers.filter(
     (d) =>
       d.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       d.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -38,7 +38,7 @@ const DistributorList = () => {
   const downloadExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(filtered);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Distributors");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Dealer");
 
     const excelBuffer = XLSX.write(workbook, {
       bookType: "xlsx",
@@ -49,7 +49,7 @@ const DistributorList = () => {
       type: "application/octet-stream",
     });
 
-    saveAs(fileData, "distributors.xlsx");
+    saveAs(fileData, "dealer.xlsx");
   };
 
   if (loading)
@@ -64,12 +64,13 @@ const DistributorList = () => {
       <div className="bg-white rounded shadow p-4 flex flex-col flex-1">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-lg font-bold text-gray-700">Distributor List</h1>
+          <h1 className="text-lg font-bold text-gray-700">Dealer List</h1>
 
           <button
             onClick={downloadExcel}
             className="bg-blue-700 text-white px-4 py-1 rounded hover:bg-blue-600 transition duration-200"
           >
+
             DOWNLOAD
           </button>
         </div>
@@ -111,7 +112,7 @@ const DistributorList = () => {
                 "Name",
                 "Company",
                 "Mobile",
-                "Super",
+                "Distributor",
                 "Smart keys",
                 "Ultra Smart keys",
                 "DOB",
@@ -135,12 +136,12 @@ const DistributorList = () => {
                 <td className="px-4 py-2 whitespace-nowrap">{d.name}</td>
                 <td className="px-4 py-2 whitespace-nowrap">{d.company}</td>
                 <td className="px-4 py-2 whitespace-nowrap">{d.mobile}</td>
-                <td className="px-4 py-2 whitespace-nowrap">{d.super}</td>
+                <td className="px-4 py-2 whitespace-nowrap">{d.distributor}</td>
                 <td className="px-4 py-2 whitespace-nowrap">
-                  {d.SmartKeys}
+                  {d.smartkeys}
                 </td>
                 <td className="px-4 py-2 whitespace-nowrap">
-                  {d.ultraSmartKeys}
+                  {d.ultrasmartKeys}
                 </td>
                 <td className="px-4 py-2 whitespace-nowrap">{d.dob}</td>
                 <td className="px-4 py-2 whitespace-nowrap">
@@ -151,14 +152,7 @@ const DistributorList = () => {
                   >
                     {d.status}
                   </span>
-                </td>
-                <td className="px-4 py-2 whitespace-nowrap">
-                  <button className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 mr-1 transition duration-200">
-                    Edit
-                  </button>
-                  <button className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition duration-200">
-                    Delete
-                  </button>
+                  
                 </td>
               </tr>
             ))}
@@ -175,4 +169,4 @@ const DistributorList = () => {
   );
 };
 
-export default DistributorList;
+export default DealerList;
